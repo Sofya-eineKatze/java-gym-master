@@ -41,4 +41,21 @@ public class Coach {
     public String getMiddleName() {
         return middleName;
     }
+    public static class TrainingStats {
+        private final Coach coach;
+        private final int trainingCount;
+
+        public TrainingStats(Coach coach, int trainingCount) {
+            this.coach = coach;
+            this.trainingCount = trainingCount;
+        }
+
+        public Coach getCoach() {
+            return coach;
+        }
+
+        public int getTrainingCount() {
+            return trainingCount;
+        }
+    }
 }

@@ -30,5 +30,7 @@ public class TrainingSession {
         return dayOfWeek;
     }
 
-    public TimeOfDay getTimeOfDay() {return timeOfDay;}
+    public TimeOfDay getTimeOfDay() {
+        return timeOfDay;
+    }
 }

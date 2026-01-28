@@ -41,6 +41,7 @@ public class Coach {
     public String getMiddleName() {
         return middleName;
     }
+
     public static class TrainingStats {
         private final Coach coach;
         private final int trainingCount;

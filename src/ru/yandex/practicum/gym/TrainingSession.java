@@ -35,6 +35,7 @@ public class TrainingSession {
     public TimeOfDay getTimeOfDay() {
         return timeOfDay;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

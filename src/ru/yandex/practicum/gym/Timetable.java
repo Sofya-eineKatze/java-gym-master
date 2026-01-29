@@ -4,12 +4,14 @@ import java.util.*;
 
 public class Timetable {
     private HashMap<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable;
+    private HashMap<DayOfWeek, List<TrainingSession>> allSessionsByDay;
 
     public Timetable() {
         timetable = new HashMap<>();
-        // Инициализируем все дни недели
+        allSessionsByDay = new HashMap<>();
         for (DayOfWeek day : DayOfWeek.values()) {
             timetable.put(day, new TreeMap<>());
+            allSessionsByDay.put(day, new ArrayList<>());
         }
     }
 
@@ -17,40 +19,20 @@ public class Timetable {
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
 
-        // Получаем TreeMap для указанного дня
         TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(day);
-
-        // Получаем список тренировок для данного времени
         List<TrainingSession> sessions = daySchedule.get(time);
 
-        // Если списка еще нет, создаем новый
         if (sessions == null) {
             sessions = new ArrayList<>();
             daySchedule.put(time, sessions);
         }
 
-        // Добавляем тренировку в список для данного времени
         sessions.add(trainingSession);
+        allSessionsByDay.get(day).add(trainingSession);
     }
 
     public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
-        List<TrainingSession> allSessions = new ArrayList<>();
-
-        // Проверяем, есть ли расписание для этого дня
-        if (daySchedule == null) {
-            return allSessions;
-        }
-
-        // Используем navigableKeySet() для получения ключей в отсортированном порядке
-        for (TimeOfDay time : daySchedule.navigableKeySet()) {
-            List<TrainingSession> sessions = daySchedule.get(time);
-            if (sessions != null) {
-                allSessions.addAll(sessions);
-            }
-        }
-
-        return allSessions;
+        return new ArrayList<>(allSessionsByDay.get(dayOfWeek));
     }
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {

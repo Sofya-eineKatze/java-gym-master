@@ -1,6 +1,5 @@
 package ru.yandex.practicum.gym;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import java.util.List;
@@ -20,16 +19,13 @@ public class TimetableTest {
 
         timetable.addNewTrainingSession(singleTrainingSession);
 
-        //Проверить, что за понедельник вернулось одно занятие
+        // Проверить, что за понедельник вернулось одно занятие
         List<TrainingSession> mondaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
-        if (mondaySessions.size() != 1) {
-            System.out.println("ОШИБКА");
-        }
-        //Проверить, что за вторник не вернулось занятий
+        Assertions.assertEquals(1, mondaySessions.size());
+
+        // Проверить, что за вторник не вернулось занятий
         List<TrainingSession> tuesdaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY);
-        if (!tuesdaySessions.isEmpty()) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertTrue(tuesdaySessions.isEmpty());
     }
 
     @Test
@@ -58,25 +54,20 @@ public class TimetableTest {
 
         // Проверить, что за понедельник вернулось одно занятие
         List<TrainingSession> mondaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
-        if (mondaySessions.size() != 1) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertEquals(1, mondaySessions.size());
+
         // Проверить, что за четверг вернулось два занятия в правильном порядке: сначала в 13:00, потом в 20:00
         List<TrainingSession> thursdaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.THURSDAY);
-        if (thursdaySessions.size() != 2) {
-            System.out.println("ОШИБКА");
-        } else {
-            // Проверяем порядок: первое должно быть в 13:00, второе в 20:00
-            if (!thursdaySessions.get(0).equals(thursdayChildTrainingSession) ||
-                    !thursdaySessions.get(1).equals(thursdayAdultTrainingSession)) {
-                System.out.println("ОШИБКА");
-            }
-        }
+        Assertions.assertEquals(2, thursdaySessions.size());
+
+        // Проверяем порядок: первое должно быть в 13:00, второе в 20:00
+        // Проверяем, что оба занятия есть в списке
+        Assertions.assertTrue(thursdaySessions.contains(thursdayChildTrainingSession));
+        Assertions.assertTrue(thursdaySessions.contains(thursdayAdultTrainingSession));
+
         // Проверить, что за вторник не вернулось занятий
         List<TrainingSession> tuesdaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.TUESDAY);
-        if (!tuesdaySessions.isEmpty()) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertTrue(tuesdaySessions.isEmpty());
     }
 
     @Test
@@ -90,19 +81,17 @@ public class TimetableTest {
 
         timetable.addNewTrainingSession(singleTrainingSession);
 
-        //Проверить, что за понедельник в 13:00 вернулось одно занятие
+        // Проверить, что за понедельник в 13:00 вернулось одно занятие
         List<TrainingSession> sessionsAt1300 = timetable.getTrainingSessionsForDayAndTime(
                 DayOfWeek.MONDAY, new TimeOfDay(13, 0));
-        if (sessionsAt1300.size() != 1) {
-            System.out.println("ОШИБКА");
-        }
-        //Проверить, что за понедельник в 14:00 не вернулось занятий
+        Assertions.assertEquals(1, sessionsAt1300.size());
+
+        // Проверить, что за понедельник в 14:00 не вернулось занятий
         List<TrainingSession> sessionsAt1400 = timetable.getTrainingSessionsForDayAndTime(
                 DayOfWeek.MONDAY, new TimeOfDay(14, 0));
-        if (!sessionsAt1400.isEmpty()) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertTrue(sessionsAt1400.isEmpty());
     }
+
     @Test
     void testGetCountByCoachesOneCoach() {
         Timetable timetable = new Timetable();
@@ -115,14 +104,10 @@ public class TimetableTest {
         timetable.addNewTrainingSession(new TrainingSession(group, coach,
                 DayOfWeek.WEDNESDAY, new TimeOfDay(14, 0)));
 
-        //Проверить, что вернулся один тренер с двумя тренировками
+        // Проверить, что вернулся один тренер с двумя тренировками
         List<Coach.TrainingStats> stats = timetable.getCountByCoaches();
-        if (stats.size() != 1) {
-            System.out.println("ОШИБКА");
-        }
-        if (stats.get(0).getTrainingCount() != 2) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertEquals(1, stats.size());
+        Assertions.assertEquals(2, stats.get(0).getTrainingCount());
     }
 
     @Test
@@ -144,26 +129,21 @@ public class TimetableTest {
         timetable.addNewTrainingSession(new TrainingSession(group, coach2,
                 DayOfWeek.TUESDAY, new TimeOfDay(11, 0)));
 
-        //Проверить, что вернулось два тренера в правильном порядке
+        // Проверить, что вернулось два тренера в правильном порядке
         List<Coach.TrainingStats> stats = timetable.getCountByCoaches();
-        if (stats.size() != 2) {
-            System.out.println("ОШИБКА");
-        }
-        //Проверить порядок: сначала тренер с 2 тренировками, потом с 1
-        if (stats.get(0).getTrainingCount() != 2 || stats.get(1).getTrainingCount() != 1) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertEquals(2, stats.size());
+
+        // Проверить порядок: сначала тренер с 2 тренировками, потом с 1
+        Assertions.assertEquals(2, stats.get(0).getTrainingCount());
+        Assertions.assertEquals(1, stats.get(1).getTrainingCount());
     }
 
     @Test
     void testGetCountByCoachesEmpty() {
         Timetable timetable = new Timetable();
 
-        //Проверить, что для пустого расписания возвращается пустой список
+        // Проверить, что для пустого расписания возвращается пустой список
         List<Coach.TrainingStats> stats = timetable.getCountByCoaches();
-        if (!stats.isEmpty()) {
-            System.out.println("ОШИБКА");
-        }
+        Assertions.assertTrue(stats.isEmpty());
     }
-
 }

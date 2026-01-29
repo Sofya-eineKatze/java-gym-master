@@ -27,6 +27,7 @@ public class Group {
     public int getDuration() {
         return duration;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

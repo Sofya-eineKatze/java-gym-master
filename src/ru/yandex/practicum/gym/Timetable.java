@@ -3,8 +3,8 @@ package ru.yandex.practicum.gym;
 import java.util.*;
 
 public class Timetable {
-    private HashMap<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable;
-    private HashMap<DayOfWeek, List<TrainingSession>> allSessionsByDay;
+    private final HashMap<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable;
+    private final HashMap<DayOfWeek, List<TrainingSession>> allSessionsByDay;
 
     public Timetable() {
         timetable = new HashMap<>();
@@ -28,30 +28,33 @@ public class Timetable {
         }
 
         sessions.add(trainingSession);
-        allSessionsByDay.get(day).add(trainingSession);
+        List<TrainingSession> dayList = allSessionsByDay.get(day);
+
+        dayList.clear();
+
+        for (List<TrainingSession> slot : daySchedule.values()) {
+            dayList.addAll(slot);
+        }
     }
 
     public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        return new ArrayList<>(allSessionsByDay.get(dayOfWeek));
+        return Collections.unmodifiableList(allSessionsByDay.get(dayOfWeek));
     }
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
         TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
 
-        // Проверяем, есть ли расписание для этого дня
         if (daySchedule == null) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        // Получаем список тренировок для данного времени
         List<TrainingSession> sessions = daySchedule.get(timeOfDay);
 
-        // Если списка нет, возвращаем пустой список
         if (sessions == null) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        return sessions;
+        return Collections.unmodifiableList(sessions);
     }
 
     public List<Coach.TrainingStats> getCountByCoaches() {
